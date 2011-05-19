@@ -2,6 +2,7 @@
 require "rubygems"
 require "highline/import"
 require "~/dev/fact/clearcase"
+require "~/dev/fact/files_cli.rb"
 
 module Fact
 
@@ -61,7 +62,7 @@ class ActivitiesCli
         #  Add a menu entry for each file in the changeset
         changeset.each do |file, versions|
           # Suffix contains the versions count and the check-out indicator
-          suffix = "version#{"s" unless versions.size<2}) #{"<%= color('CHECKED-OUT!', :red) %>" if versions.last=~/CHECKEDOUT/}"
+          suffix = "version#{"s" unless versions.size<2}) #{"<%= color('CHECKED-OUT!', :red) %>" if ClearCase.checkout_version?(versions.last)}"
           menu.choice("#{file} (#{versions.size} #{suffix}") { file }
         end
 
@@ -80,5 +81,7 @@ end
 activity = Fact::ActivitiesCli.choose_undelivered_activity
 unless activity.nil?
   file = Fact::ActivitiesCli.choose_file_from_activity(activity)
-  puts Fact::ClearCase.get_file_info(file)
+  file_info = Fact::ClearCase.get_file_info(file)
+  puts ""
+  Fact::FilesCli.show_file_info(file_info)
 end

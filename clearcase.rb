@@ -37,9 +37,12 @@ class ClearCase
 
     versions = change_set[file]
 
-    changeset_predecessor = get_previous_version(file, versions.first)
+    # Adding additional information to the existing hash
+    curr_version_info[:name] = file
+    curr_version_info[:changeset_predecessor] = get_previous_version(file, versions.first)
+    curr_version_info[:versions_count] = versions.size
 
-    return [curr_version_info.to_a, versions, changeset_predecessor]
+    return curr_version_info
   end
 
   # Returns the changes that were made as a part of the specified activity.
@@ -112,6 +115,10 @@ class ClearCase
     end
 
     return activities
+  end
+
+  def ClearCase.checkout_version?(version)
+    return version =~ /CHECKEDOUT/
   end
 
 end
