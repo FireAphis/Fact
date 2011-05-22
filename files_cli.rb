@@ -1,7 +1,15 @@
 
+# System libraries
 require "rubygems"
 require "highline/import"
-require "~/dev/fact/clearcase"
+
+# Allow requiring this file's siblings
+libdir = File.expand_path(File.dirname(__FILE__))
+$LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
+
+# Local libraries
+require "clearcase"
+
 
 module Fact
 
