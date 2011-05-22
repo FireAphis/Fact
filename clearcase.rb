@@ -66,12 +66,12 @@ class ClearCase
     return change_set
   end
 
-  # Launches the default diff tool comparing the specified versions.
-  # The parameters are supposed to be strings that are qualified parameters for
-  # ClearCase diff command.
+  # Launches the default diff tool comparing the a file with its other version.
+  # The first parameter is the name of an existing file. The second parameter is
+  # a string indicating a version of the same file.
   #
-  def ClearCase.diff_graphical(version1, version2)
-    diff_process = fork { exec "cleartool diff -gra #{version1} #{version2}" }
+  def ClearCase.diff_other_version(file, version)
+    diff_process = fork { exec "cleartool diff -gra #{file} #{file}@@#{version}" }
     Process.detach(diff_process)
   end
 

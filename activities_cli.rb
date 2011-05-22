@@ -84,4 +84,8 @@ unless activity.nil?
   file_info = Fact::ClearCase.get_file_info(file)
   puts ""
   Fact::FilesCli.show_file_info(file_info)
+
+  puts ""
+  puts "Graphical diff is being opened in an external application."
+  Fact::ClearCase.diff_other_version(file, file_info[:changeset_predecessor])
 end
