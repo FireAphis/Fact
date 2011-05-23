@@ -1,11 +1,6 @@
 
 # System libraries
-require "rubygems"
 require "highline/import"
-
-# Allow requiring this file's siblings
-libdir = File.expand_path(File.dirname(__FILE__))
-$LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
 # Local libraries
 require "clearcase"
@@ -13,11 +8,11 @@ require "clearcase"
 
 module Fact
 
-class FilesCli
+class Cli
 
   #
   #
-  def FilesCli.show_file_info(info)
+  def Cli.show_file_info(info)
 
     if ClearCase.checkout_version?(info[:version])
       last_ver_text = "<%= color('CHECKED-OUT!', :red) %>"

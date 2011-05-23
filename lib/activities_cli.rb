@@ -1,11 +1,6 @@
 
 # System libraries
-require "rubygems"
 require "highline/import"
-
-# Allow requiring this file's siblings
-libdir = File.expand_path(File.dirname(__FILE__))
-$LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
 # Local libraries
 require "clearcase"
@@ -14,11 +9,11 @@ require "files_cli"
 
 module Fact
 
-class ActivitiesCli
+class Cli
 
   #
   #
-  def ActivitiesCli.choose_undelivered_activity
+  def Cli.choose_undelivered_activity
 
     stream = ClearCase.get_current_stream
     return if stream==""
@@ -53,7 +48,7 @@ class ActivitiesCli
 
   #
   #
-  def ActivitiesCli.choose_file_from_activity(activity_name)
+  def Cli.choose_file_from_activity(activity_name)
 
     puts ""
     say("Fetching the change set for the activity <%= color('#{activity_name}', BOLD) %>... ")
@@ -92,20 +87,3 @@ end
 
 
 
-activity = Fact::ActivitiesCli.choose_undelivered_activity
-
-unless activity.nil?
-  # Come back every time to showing the files in the activity
-  loop do
-    file = Fact::ActivitiesCli.choose_file_from_activity(activity)
-    file_info = Fact::ClearCase.get_file_info(file)
-    puts ""
-    Fact::FilesCli.show_file_info(file_info)
- 
-    puts ""
-    if agree("Compare with the change set predecessor?")
-      puts "Graphical diff is being opened in an external application."
-      Fact::ClearCase.diff_other_version(file, file_info[:changeset_predecessor])
-    end
-  end
-end
