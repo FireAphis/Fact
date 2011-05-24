@@ -23,19 +23,19 @@ activity = Fact::Cli.choose_undelivered_activity
 unless activity.nil?
   # Come back every time to showing the files in the activity
   loop do
-    file = Fact::Cli.choose_file_from_activity(activity)
+    file_version = Fact::Cli.choose_file_from_activity(activity)
 
     say("Fetching the file description... ")
-    file_info = Fact::ClearCase.get_file_info(file)
+    version_info = Fact::ClearCase.get_version_info(file_version)
     say("Done")
 
     puts ""
-    Fact::Cli.show_file_info(file_info)
+    Fact::Cli.show_version_info(version_info)
  
     puts ""
     if agree("Compare with the change set predecessor?")
       say("Graphical diff is being opened in an external application.")
-      Fact::ClearCase.diff_other_version(file, file_info[:changeset_predecessor])
+      Fact::ClearCase.diff_other_version(file_version[:file], version_info[:changeset_predecessor])
     end
   end
 end

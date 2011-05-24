@@ -46,7 +46,8 @@ class Cli
   end
 
 
-  #
+  # Asks to choose from a list of files in the activity and returns the last version of
+  # the file in the activity in a hash with keys :file and :version.
   #
   def Cli.choose_file_from_activity(activity_name)
 
@@ -69,7 +70,7 @@ class Cli
         changeset.each do |file, versions|
           # Suffix contains the versions count and the check-out indicator
           suffix = "version#{"s" unless versions.size<2}) #{"<%= color('CHECKED-OUT!', :red) %>" if ClearCase.checkout_version?(versions.last)}"
-          menu.choice("#{file} (#{versions.size} #{suffix}") { file }
+          menu.choice("#{file} (#{versions.size} #{suffix}") { {:file => file, :version => versions.last} }
         end
 
         # The last entry allows graceful exit

@@ -13,7 +13,7 @@ class ClearCase
   #
   #
   def ClearCase.get_previous_version(file, version)
-    return `cleartool desc -pred -s #{file}@@#{version}`.rstrip
+    return `cleartool desc -pred -s #{create_cc_version(file,version)}`.rstrip
   end
 
   # Get all the non-obsolete activities in the current view.
@@ -24,17 +24,24 @@ class ClearCase
     return parse_lsact_output(`cleartool lsact -fmt "%[name]p,%[headline]p,"`)
   end
 
+  # Get version information. The argument must be a hash with keys :file and :version.
+  # Returns a version info hash.
   #
-  #
-  def ClearCase.get_file_info(file)
+  def ClearCase.get_version_info(file_version)
+
     # Get the properties of the latest version of the file
-    curr_version_info = parse_describe_file(`cleartool desc -fmt "version=%Sn, activity=%[activity]p, date=%Sd, type=%m, predecessor=%PVn" #{file}`)
+    version_str = create_cc_version(file_version[:file],file_version[:version])
+    curr_version_info = parse_describe_file(`cleartool desc -fmt "version=%Sn, activity=%[activity]p, date=%Sd, type=%m, predecessor=%PVn" #{version_str}`)
     return if curr_version_info.nil?
 
     # Retreive all the change set to find the earliest version of the file in the change set
     change_set = get_activity_change_set(curr_version_info[:activity])
     return if change_set.nil?
 
+    # Get the file name component of the file version string
+    file = file_version[:file]
+
+    # Get versions array for the file
     versions = change_set[file]
 
     # Adding additional information to the existing hash
@@ -60,7 +67,7 @@ class ClearCase
     # Convert the string into a sorted array and iterate it
     versions_dump.split(" ").sort.each do |version_str|
       version = parse_cc_version(version_str)
-      change_set[version[:file]].push("#{version[:branch]}/#{version[:version_number]}")
+      change_set[version[:file]].push("#{version[:version]}")
     end
 
     return change_set
@@ -71,7 +78,7 @@ class ClearCase
   # a string indicating a version of the same file.
   #
   def ClearCase.diff_other_version(file, version)
-    diff_process = fork { exec "cleartool diff -gra #{file} #{file}@@#{version}" }
+    diff_process = fork { exec "cleartool diff -gra #{file} #{create_cc_version(file,version)}" }
     Process.detach(diff_process)
   end
 
@@ -82,12 +89,18 @@ class ClearCase
   #
   #       <file full path>@@<branch name>/{<version number>|CHECKEDOUT.<checkout number>}
   #
-  # Returns a hash with the following keys: :file, :branch, :version_number.
+  # Returns a hash with the following keys: :file, :version.
   #
   def ClearCase.parse_cc_version(version_str)
     if version_str =~ /(.*)@@(.+)\/(CHECKEDOUT\.)?(\d+)$/
-      return { :file => $1, :branch => $2, :version_number => "#{$3}#{$4}" }
+      return { :file => $1, :version => "#{$2}/#{$3}#{$4}" }
     end
+  end
+
+  # Build a string that is a qualified ClearCase file version.
+  #
+  def ClearCase.create_cc_version(file, version)
+    return "#{file}@@#{version}"
   end
 
   #
