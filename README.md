@@ -18,7 +18,7 @@ key presses and without the need to remember numerous commands.
 
 Here's the current menus hierarchy of the CLI mode:
 
-'''
+```
     Undeliverd activities
         |
         --- Activity change set
@@ -26,7 +26,7 @@ Here's the current menus hierarchy of the CLI mode:
                 --- File information
                         |
                         --- Change set predecessor diff
-'''
+```
 
         
 Development status
@@ -48,5 +48,5 @@ development environment.
 
 - Ruby 1.8.5
 
-- HighLine (http://highline.rubyforge.org/)
+- HighLine (http://highline.rubyforge.org/).
   Developed with 1.6.1, should work with earlier versions as well.
