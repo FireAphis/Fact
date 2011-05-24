@@ -11,7 +11,9 @@ module Fact
 
 class Cli
 
-  #
+  # Ask the user to choose from the list of all the undelivered activities
+  # in the current stream.
+  # Returns the name of the chosen activity.
   #
   def Cli.choose_undelivered_activity
 

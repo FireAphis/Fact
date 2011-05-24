@@ -10,7 +10,7 @@ class ClearCase
     return `cleartool lsstream -s`.rstrip
   end
 
-  #
+  # Get the previous version of the version specified in the arguments.
   #
   def ClearCase.get_previous_version(file, version)
     return `cleartool desc -pred -s #{create_cc_version(file,version)}`.rstrip
@@ -104,7 +104,8 @@ class ClearCase
     return "#{file}@@#{version}"
   end
 
-  #
+  # Parse the output of the cleartool describe command. The text is expected to be of a specific
+  # format and not the regular cleartool describe -long.
   #
   def ClearCase.parse_describe_file(describe_str)
     if describe_str =~ /version=(.*), activity=(.*), date=(.*), type=(.*), predecessor=(.*) user=(.*)$/

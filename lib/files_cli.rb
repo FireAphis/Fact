@@ -10,7 +10,11 @@ module Fact
 
 class Cli
 
+  # Format and print to stdout the specified information.
+  # The parameter must be a hash with the following keys:
   #
+  #     :version, :name, :activity, :date, :user,
+  #     :versions_count, :changeset_predecessor
   #
   def Cli.show_version_info(info)
 
