@@ -29,7 +29,7 @@ class Cli
     say("    Last activity:")
     say("        Activity name: #{info[:activity]}")
     say("        Last version:  #{last_ver_text}")
-    say("                       created on #{info[:date]}")
+    say("                       created on #{info[:date]} by #{info[:user]}")
     say("                       #{info[:versions_count]-1} more version#{"s" unless info[:versions_count]==2} in the activity")
     say("    Activity predecessor: #{info[:changeset_predecessor]}")
   end

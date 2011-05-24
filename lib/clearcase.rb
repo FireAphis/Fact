@@ -31,7 +31,8 @@ class ClearCase
 
     # Get the properties of the latest version of the file
     version_str = create_cc_version(file_version[:file],file_version[:version])
-    curr_version_info = parse_describe_file(`cleartool desc -fmt "version=%Sn, activity=%[activity]p, date=%Sd, type=%m, predecessor=%PVn" #{version_str}`)
+    format_str  = "version=%Sn, activity=%[activity]p, date=%Sd, type=%m, predecessor=%PVn, user=%Fu"
+    curr_version_info = parse_describe_file(`cleartool desc -fmt "#{format_str}" #{version_str}`)
     return if curr_version_info.nil?
 
     # Retreive all the change set to find the earliest version of the file in the change set
@@ -106,8 +107,8 @@ class ClearCase
   #
   #
   def ClearCase.parse_describe_file(describe_str)
-    if describe_str =~ /version=(.*), activity=(.*), date=(.*), type=(.*), predecessor=(.*)$/
-      return { :version=>$1, :activity=>$2, :date=>$3, :type=>$4, :predecessor=>$5 }
+    if describe_str =~ /version=(.*), activity=(.*), date=(.*), type=(.*), predecessor=(.*) user=(.*)$/
+      return { :version=>$1, :activity=>$2, :date=>$3, :type=>$4, :predecessor=>$5, :user=>$6 }
     end
   end
 
