@@ -22,7 +22,7 @@ again. Each time I have to choose between tedious and cluttered GUI and
 looking through my notes for the correct combination of over sophisticated
 command line commands.
 
-This tool allows to perform the most common task in minimal amount of
+This tool allows to perform the most common tasks in minimal amount of
 clicks and supplies only the necessary information in the most readable
 format, I could think of. Hope you will enjoy it too.
 
