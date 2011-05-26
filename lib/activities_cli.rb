@@ -17,12 +17,14 @@ class Cli
   #
   def Cli.choose_undelivered_activity
 
-    stream = ClearCase.get_current_stream
+    cc = ClearCase.new
+
+    stream = cc.get_current_stream
     return if stream==""
 
     puts ""
     say("The current stream is <%= color('#{stream}', BOLD) %>. Fetching the stream activities... ")
-    activities = ClearCase.get_activities
+    activities = cc.get_activities
     say("Done.")
 
     if activities.empty?
@@ -53,9 +55,11 @@ class Cli
   #
   def Cli.choose_file_from_activity(activity_name)
 
+    cc = ClearCase.new
+
     puts ""
     say("Fetching the change set for the activity <%= color('#{activity_name}', BOLD) %>... ")
-    changeset = ClearCase.get_activity_change_set(activity_name)
+    changeset = cc.get_activity_change_set(activity_name)
     say("Done.")
 
     if changeset.empty?
@@ -71,7 +75,7 @@ class Cli
         #  Add a menu entry for each file in the changeset
         changeset.each do |file, versions|
           # Suffix contains the versions count and the check-out indicator
-          suffix = "version#{"s" unless versions.size<2}) #{"<%= color('CHECKED-OUT!', :red) %>" if ClearCase.checkout_version?(versions.last)}"
+          suffix = "version#{"s" unless versions.size<2}) #{"<%= color('CHECKED-OUT!', :red) %>" if cc.checkout_version?(versions.last)}"
           menu.choice("#{file} (#{versions.size} #{suffix}") { {:file => file, :version => versions.last} }
         end
 

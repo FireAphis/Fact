@@ -18,8 +18,10 @@ class Cli
   #
   def Cli.show_version_info(info)
 
-    if ClearCase.checkout_version?(info[:version])
-      last_ver_text = "<%= color('CHECKED-OUT!', :red) %>"
+    cc = ClearCase.new
+
+    if cc.checkout_version?(info[:version])
+      last_ver_text = "<%= color('CHECKED-OUT!', :red) %> in #{info[:checkout]}"
     else
       last_ver_text = "#{info[:version]}"
     end

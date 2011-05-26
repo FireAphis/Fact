@@ -1,3 +1,4 @@
+#!/usr/bin/ruby
 
 # System libraries
 require "rubygems"
@@ -13,10 +14,8 @@ require "activities_cli"
 require "files_cli"
 
 
-module Fact
 
-end
-
+cc = Fact::ClearCase.new
 
 activity = Fact::Cli.choose_undelivered_activity
 
@@ -26,16 +25,18 @@ unless activity.nil?
     file_version = Fact::Cli.choose_file_from_activity(activity)
 
     say("Fetching the file description... ")
-    version_info = Fact::ClearCase.get_version_info(file_version)
+    version_info = cc.get_version_info(file_version)
     say("Done")
 
     puts ""
     Fact::Cli.show_version_info(version_info)
  
     puts ""
-    if agree("Compare with the change set predecessor?")
+    if version_info[:checkout] != "" and version_info[:checkout] != cc.get_current_view
+      say("The file is checked out in a different view. Check it in to diff.")
+    elsif agree("Compare with the change set predecessor?")
       say("Graphical diff is being opened in an external application.")
-      Fact::ClearCase.diff_other_version(file_version[:file], version_info[:changeset_predecessor])
+      cc.diff_other_version(file_version[:file], file_version[:version], version_info[:changeset_predecessor])
     end
   end
 end
