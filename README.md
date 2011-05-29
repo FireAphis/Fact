@@ -56,7 +56,7 @@ your PATH.
 Tested with the following versions:
 
 - CentOS 5.3
-- Ruby 1.8.5
+- Ruby 1.8.5 and 1.9.2
 - HighLine 1.6.1
 - IBM Rational ClearCase 7.0.1
 
