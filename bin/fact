@@ -1,13 +1,5 @@
 #!/usr/bin/ruby
 
-# Invokes the Fact interactive prompt.
-# Fact is expected to be executed from a ClearCase view directory.
-# All the commands will be handled in respect to this view.
-
-require "rubygems"
-require "fact"
-
-
 # FireAphisClearerTool (FACT) is a small project intended to make a life
 # with ClearCase a little bit happier. The project tries to achieve the
 # goal in two ways:
@@ -16,11 +8,16 @@ require "fact"
 # 2. Create a library that simplifies the process of development of scripts
 #    that interact with ClearCase.
 #
-# Execute bin/fact to enter the interactive mode. Consult Fact::ClearCase
-# for the list of the supported ClearCase operations.
+# Execute +fact+ to enter the interactive mode. 
+# +fact+ is expected to be executed from a ClearCase view directory.
+# All the commands will be handled in respect to this view.
 #
-module Fact
-end
+# It is possible to require +fact+ to access ClearCase from Ruby code.
+# Consult Fact::ClearCase for the list of the supported ClearCase operations.
+
+require "rubygems"
+require "fact"
+
 
 cc = Fact::ClearCase.new
 
