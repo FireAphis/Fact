@@ -1,18 +1,8 @@
 #!/usr/bin/ruby
 
-# System libraries
 require "rubygems"
 require "test/unit"
-
-# Allow requiring the files in this library even if it wasn't installed
-# as a gem
-libdir = File.expand_path("../lib", File.dirname(__FILE__))
-$LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
-
-# Local libraries
-require "clearcase"
-require "activities_cli"
-require "files_cli"
+require "fact"
 
 class MockClearTool
 
