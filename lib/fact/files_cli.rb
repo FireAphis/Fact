@@ -3,7 +3,7 @@
 require "highline/import"
 
 # Local libraries
-require "clearcase"
+require "fact/clearcase"
 
 
 module Fact

@@ -3,8 +3,8 @@
 require "highline/import"
 
 # Local libraries
-require "clearcase"
-require "files_cli"
+require "fact/clearcase"
+require "fact/files_cli"
 
 
 module Fact

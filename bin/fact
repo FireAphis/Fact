@@ -1,19 +1,26 @@
 #!/usr/bin/ruby
 
-# System libraries
+# Invokes the Fact interactive prompt.
+# Fact is expected to be executed from a ClearCase view directory.
+# All the commands will be handled in respect to this view.
+
 require "rubygems"
-
-# Allow requiring the files in this library even if it wasn't installed
-# as a gem
-libdir = File.expand_path("../lib", File.dirname(__FILE__))
-$LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
-
-# Local libraries
-require "clearcase"
-require "activities_cli"
-require "files_cli"
+require "fact"
 
 
+# FireAphisClearerTool (FACT) is a small project intended to make a life
+# with ClearCase a little bit happier. The project tries to achieve the
+# goal in two ways:
+#
+# 1. Create an intuitive front end for IBM Rational ClearCase SCM.
+# 2. Create a library that simplifies the process of development of scripts
+#    that interact with ClearCase.
+#
+# Execute bin/fact to enter the interactive mode. Consult Fact::ClearCase
+# for the list of the supported ClearCase operations.
+#
+module Fact
+end
 
 cc = Fact::ClearCase.new
 
