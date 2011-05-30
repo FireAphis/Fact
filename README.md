@@ -30,7 +30,7 @@ format, I could think of. Hope you will enjoy it too.
 CLI
 ---
 
-By executing bin/cli.rb the user enters the CLI mode. This mode is designed
+By executing ```fact``` the user enters the CLI mode. This mode is designed
 to support common use cases. It is supposed to make the job done in minimum 
 key presses and without the need to remember numerous commands.
 
