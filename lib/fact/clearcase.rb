@@ -90,6 +90,28 @@ class ClearCase
     return change_set
   end
 
+  # Get a list of the hijacked files in the current directory and all the
+  # subdirectories. Return a list of hashes. Each hash having keys
+  # :file and :version.
+  #
+  def get_hijacked_files
+    # Get recursively all the files in the current and child directories
+    ls_out = @cleartool.invoke("ls -r")
+
+    files = []
+
+    ls_out.each_line do |ls_line|
+      # Find all the hijacks
+      if ls_line =~ /(.*) \[hijacked\]/
+        files.push(parse_cc_version($1))
+      end
+    end
+
+    return files
+  end
+
+
+
   # Launches the default diff tool comparing two versions of a file.
   # The first parameter is the name of an existing file. The second and the third 
   # parameters are strings indicating versions of the same file.

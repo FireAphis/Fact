@@ -102,4 +102,49 @@ class ClearCaseWrapperTests < Test::Unit::TestCase
     assert_equal(expected, change_set)
   end
 
+  def test_get_hijacked_files
+    # Define the expected calls
+    ct = MockClearTool.new
+    ct.add_invocation('ls -r', 
+      [ "Connect",
+        "a1.cpp.obsolete@@/main/fact_1.0_Integ/4        Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "a2.h.obsolete@@/main/fact_1.0_Integ/5          Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "a3.cpp.obsolete@@/main/fact_1.0_Integ/fireaphis_1.0_2/1             Rule: .../fireaphis_1.0_2/LATEST",
+        "a4.h.obsolete@@/main/fact_1.0_Integ/fireaphis_1.0_2/2               Rule: .../fireaphis_1.0_2/LATEST",
+        "a5.h.obsolete@@/main/fact_1.0_Integ/2        Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "a6.cpp.obsolete@@/main/fact_1.0_Integ/fireaphis_1.0_2/4                Rule: .../fireaphis_1.0_2/LATEST",
+        "a7.h.obsolete@@/main/fact_1.0_Integ/fireaphis_1.0_2/3  Rule: .../fireaphis_1.0_2/LATEST",
+        "a8.h.obsolete@@/main/fact_1.0_Integ/3         Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "a9.cpp.keep",
+        "a10.cpp.keep.1",
+        "a11.cpp.keep.2",
+        "a12.h@@/main/fireaphis_1.0_2/4   Rule: .../fireaphis_1.0_2/LATEST",
+        "a13.h@@/main/fact_1.0_Integ/2  Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "a14.h@@/main/fact_1.0_Integ/1            Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "a15.cpp@@/main/fact_1.0_Integ/4  Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "a16.h@@/main/fact_1.0_Integ/fireaphis_1.0_2/2 [hijacked]             Rule: .../fireaphis_1.0_2/LATEST",
+        "a17.h@@/main/fact_1.0_Integ/1               Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "test@@/main/fact_1.0_Integ/fireaphis_1.0_2/3    Rule: .../fireaphis_1.0_2/LATEST",
+        "./test/a18.h.obsolete@@/main/fact_1.0_Integ/3 [hijacked] Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "./test/a19.cpp.obsolete@@/main/fact_1.0_Integ/9  Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "./test/a20.cpp@@/main/fact_1.0_Integ/3 [hijacked]            Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "./test/a21.h@@/main/fact_1.0_Integ/fireaphis_1.0_2/2     Rule: .../fireaphis_1.0_2/LATEST",
+        "./test/a22.cpp.obsolete@@/main/fact_1.0_Integ/3              Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2",
+        "./test/a23.h.obsolete@@/main/fact_1.0_Integ/2                Rule: fact_1.0_1.0.0.0-663_31-MAY-2011_02.22.291 -mkbranch fireaphis_1.0_2"
+      ].join("\n"))
+
+    cc = Fact::ClearCase.new
+    cc.cleartool = ct
+
+    hijacked = []
+
+    err = catch(:wrongInvocation) { hijacked = cc.get_hijacked_files }
+    assert(ct.succeeded, err)
+
+    expected = [{:file=>"a16.h",                 :version=>"/main/fact_1.0_Integ/fireaphis_1.0_2/2"},
+                {:file=>"./test/a18.h.obsolete", :version=>"/main/fact_1.0_Integ/3"                },
+                {:file=>"./test/a20.cpp",        :version=>"/main/fact_1.0_Integ/3"                }] 
+    assert_equal(expected, hijacked)
+    
+  end
 end

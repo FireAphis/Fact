@@ -11,6 +11,38 @@ module Fact
 
 class Cli
 
+  # Browse all the undelivered activities in the current stream.
+  #
+  def Cli.browse_actifities
+    cc = ClearCase.new
+
+    activity = Cli.choose_undelivered_activity
+
+    unless activity.nil?
+      # Come back every time to showing the files in the activity
+      loop do
+        file_version = Cli.choose_file_from_activity(activity)
+
+        say("Fetching the file description... ")
+        version_info = cc.get_version_info(file_version)
+        say("Done")
+
+        puts ""
+        Cli.show_version_info(version_info)
+     
+        puts ""
+        if version_info[:checkout] != "" and version_info[:checkout] != cc.get_current_view
+          say("The file is checked out in a different view. Check it in to diff.")
+        elsif agree("Compare with the change set predecessor?")
+          say("Graphical diff is being opened in an external application.")
+          cc.diff_other_version(file_version[:file], file_version[:version], version_info[:changeset_predecessor])
+        end
+      end
+    end
+
+  end
+
+
   # Ask the user to choose from the list of all the undelivered activities
   # in the current stream.
   # Returns the name of the chosen activity.
