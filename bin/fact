@@ -22,9 +22,9 @@ require "fact"
 cc = Fact::ClearCase.new
 
 choose do |menu|
-  menu.prompt    = "Choose an action:"
+  menu.prompt    = "Choose an action: "
   menu.select_by = :index
 
   menu.choice("Browse activities")   { Fact::Cli.browse_actifities  }
-  menu.choice("Show hijacked files") { cc.get_hijacked_files }
+  menu.choice("Show hijacked files") { Fact::Cli.browse_hijacked    } 
 end
