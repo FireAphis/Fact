@@ -22,6 +22,7 @@ class Cli
       # Come back every time to showing the files in the activity
       loop do
         file_version = Cli.choose_file_from_activity(activity)
+        break if file_version.nil? # The activity doesn't contain any files
 
         say("Fetching the file description... ")
         version_info = cc.get_version_info(file_version)
