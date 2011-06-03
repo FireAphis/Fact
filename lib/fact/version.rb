@@ -1,3 +1,3 @@
 module Fact
-  VERSION = "0.1.1.a"
+  VERSION = "0.2"
 end

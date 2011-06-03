@@ -36,7 +36,7 @@ class Cli
           say("The file is checked out in a different view. Check it in to diff.")
         elsif agree("Compare with the change set predecessor?")
           say("Graphical diff is being opened in an external application.")
-          cc.diff_other_version(file_version[:file], file_version[:version], version_info[:changeset_predecessor])
+          cc.diff_versions(file_version[:file], file_version[:version], version_info[:changeset_predecessor])
         end
       end
     end
@@ -56,7 +56,7 @@ class Cli
     return if stream==""
 
     puts ""
-    say("The current stream is <%= color('#{stream}', BOLD) %>. Fetching the stream activities... ")
+    say("Fetching the stream activities... ")
     activities = cc.get_activities
     say("Done.")
 

@@ -21,6 +21,11 @@ require "fact"
 
 cc = Fact::ClearCase.new
 
+stream_name = cc.get_current_stream
+exit(true) if stream_name.empty?
+
+say("You are viewing ClearCase stream <%= color('#{stream_name}', BOLD) %>")
+say("Available actions are:")
 choose do |menu|
   menu.prompt    = "Choose an action: "
   menu.select_by = :index

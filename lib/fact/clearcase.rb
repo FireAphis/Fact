@@ -4,7 +4,7 @@ module Fact
 
 class ClearTool
     def invoke(command_str)
-        return `cleartool #{command_str}`
+      return `cleartool #{command_str}`
     end
 end
 
@@ -110,8 +110,6 @@ class ClearCase
     return files
   end
 
-
-
   # Launches the default diff tool comparing two versions of a file.
   # The first parameter is the name of an existing file. The second and the third 
   # parameters are strings indicating versions of the same file.
@@ -119,12 +117,19 @@ class ClearCase
   # currently on the disc. Beware that if the file is checked out from a different
   # view, the diff will compare wrong files.
   #
-  def diff_other_version(file, version1, version2)
+  def diff_versions(file, version1, version2)
     ver1 = checkout_version?(version1) ? file : create_cc_version(file,version1)
     ver2 = checkout_version?(version2) ? file : create_cc_version(file,version2)
-    #diff_process = fork { exec "cleartool diff -gra #{ver1} #{ver2}" }
-    #Process.detach(diff_process)
-    `cleartool diff -gra #{ver1} #{ver2}`
+    @cleartool.invoke("diff -gra #{ver1} #{ver2}")
+  end
+
+  # Launches the default diff tool comparing the local, on-disk version of a file
+  # with the specified vob version. The version must be a qualified vob version;
+  # it won't work with checked out versions.
+  #
+  def diff_vob_version(file, version)
+    full_version = create_cc_version(file, version)
+    @cleartool.invoke("diff -gra #{full_version} #{file}")
   end
 
   # Parses a string representing ClearCase element version and converts it into a hash

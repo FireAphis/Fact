@@ -15,6 +15,7 @@ class Cli
   def Cli.browse_hijacked
     cc = Fact::ClearCase.new
 
+    puts ""
     say("Scanning for hijacked files in <%= color('#{File.absolute_path('.')}', BOLD) %>... ")
     files = cc.get_hijacked_files
     say("Done")
@@ -22,8 +23,47 @@ class Cli
     if files.empty?
       say("No hijacked files.")
     else
-      puts files
+      say("The hijacked files in the directory and its subdirectories are:")
+
+      # Show the hijacked files list in a menu
+      chosen_hijack = choose do |menu|
+        menu.prompt    = "Choose a file: "
+        menu.select_by = :index
+
+        files.each do |file|
+          menu.choice(file[:file]) { file  }
+        end
+      end
+
+      Cli.operate_hijacked_file(chosen_hijack[:file], chosen_hijack[:version])
+
     end
+  end
+
+  #
+  #
+  def Cli.operate_hijacked_file(file_name, original_version)
+    puts file_name
+    puts original_version
+
+    cc = Fact::ClearCase.new
+
+    puts ""
+    say("Hijacked file <%= color('#{file_name}', BOLD) %>")
+    choose do |menu|
+        menu.prompt    = "Enter command number: "
+        menu.select_by = :index
+
+        menu.choice("Compare with the latest version") do
+          puts ""
+          say("Graphical diff is being opened in an external application.")
+          cc.diff_vob_version(file_name, original_version)
+        end
+
+        menu.choice("Drop the changes and renounce the hijack") { }
+        menu.choice("Keep the changes and checkout")            { }
+        menu.choice("Exit") {}
+      end
   end
 
   # Format and print to stdout the specified information.
