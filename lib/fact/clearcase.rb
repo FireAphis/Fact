@@ -110,6 +110,12 @@ class ClearCase
     return files
   end
 
+  #
+  #
+  def undo_hijack(file_name)
+    @cleartool.invoke("update -rename #{file_name}")
+  end
+
   # Launches the default diff tool comparing two versions of a file.
   # The first parameter is the name of an existing file. The second and the third 
   # parameters are strings indicating versions of the same file.

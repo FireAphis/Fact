@@ -33,6 +33,9 @@ class Cli
         files.each do |file|
           menu.choice(file[:file]) { file  }
         end
+
+        # The last entry allows graceful exit
+        menu.choice("Exit") { exit(true) }
       end
 
       Cli.operate_hijacked_file(chosen_hijack[:file], chosen_hijack[:version])
@@ -43,9 +46,6 @@ class Cli
   #
   #
   def Cli.operate_hijacked_file(file_name, original_version)
-    puts file_name
-    puts original_version
-
     cc = Fact::ClearCase.new
 
     puts ""
@@ -60,13 +60,12 @@ class Cli
           cc.diff_vob_version(file_name, original_version)
         end
 
-        menu.choice("Drop the changes and renounce the hijack") { }
+        menu.choice("Drop the changes and renounce the hijack") { cc.undo_hijack(file_name) }
         menu.choice("Keep the changes and checkout")            { }
-        menu.choice("Exit") {}
+        menu.choice("Exit") { exit(true) }
       end
   end
 
-  # Format and print to stdout the specified information.
   # The parameter must be a hash with the following keys:
   #
   #     :version, :name, :activity, :date, :user,
