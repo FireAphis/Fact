@@ -32,12 +32,23 @@ class ClearCase
     return @cleartool.invoke("desc -pred -s #{create_cc_version(file,version)}").rstrip
   end
 
+  # Returns the name of the current activity in the current view.
+  #
+  def get_current_activity
+    return @cleartool.invoke("lsact -cact -s").rstrip
+  end
+
   # Get all the non-obsolete activities in the current view.
   # Returns an array of hashes. Each hash represents an activity and contains 
   # two keys: :name and :headline.
   #
   def get_activities
     return parse_lsact_output(@cleartool.invoke('lsact -fmt "%[name]p,%[headline]p,"'))
+  end
+
+  # Creates a new activity and sets it as the active activity.
+  def create_activity(act_name)
+    @cleartool.invoke("mkact -f -headline \"#{act_name}\"")
   end
 
   # Get version information. The argument must be a hash with keys :file and :version.
@@ -110,10 +121,16 @@ class ClearCase
     return files
   end
 
-  #
+  # Undo the hijack. Return to the VOB version; save the changes in .keep file.
   #
   def undo_hijack(file_name)
     @cleartool.invoke("update -rename #{file_name}")
+  end
+
+  #
+  #
+  def checkout_hijacked(file_name)
+    @cleartool.invoke("co -nq -nc #{file_name}")
   end
 
   # Launches the default diff tool comparing two versions of a file.

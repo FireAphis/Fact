@@ -60,8 +60,8 @@ class Cli
           cc.diff_vob_version(file_name, original_version)
         end
 
-        menu.choice("Drop the changes and renounce the hijack") { cc.undo_hijack(file_name) }
-        menu.choice("Keep the changes and checkout")            { }
+        menu.choice("Drop the changes and renounce the hijack") { cc.undo_hijack(file_name)       }
+        menu.choice("Keep the changes and checkout")            { cc.checkout_hijacked(file_name) }
         menu.choice("Exit") { exit(true) }
       end
   end

@@ -24,12 +24,21 @@ cc = Fact::ClearCase.new
 stream_name = cc.get_current_stream
 exit(true) if stream_name.empty?
 
-say("You are viewing ClearCase stream <%= color('#{stream_name}', BOLD) %>")
-say("Available actions are:")
-choose do |menu|
-  menu.prompt    = "Choose an action: "
-  menu.select_by = :index
+curr_act = cc.get_current_activity
 
-  menu.choice("Browse activities")   { Fact::Cli.browse_actifities  }
-  menu.choice("Show hijacked files") { Fact::Cli.browse_hijacked    } 
+say("You are viewing ClearCase stream <%= color('#{stream_name}', BOLD) %>")
+
+if curr_act.empty?
+  say("The active activity hasn't been set. Set an activity if you wish to checkout files.")
+else
+  say("Current activity is <%= color('#{curr_act}', BOLD) %>")
+end
+
+puts ""
+choose do |menu|
+  menu.select_by = :index
+  menu.choice("Create and set an activity") { cc.create_activity(ask("Enter activity name: ")) }
+  menu.choice("Browse activities")          { Fact::Cli.browse_actifities  }
+  menu.choice("Browse hijacked files")      { Fact::Cli.browse_hijacked    } 
+  menu.choice("Exit") { exit(true) }
 end
