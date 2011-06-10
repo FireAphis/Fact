@@ -123,14 +123,24 @@ class ClearCase
 
   # Undo the hijack. Return to the VOB version; save the changes in .keep file.
   #
-  def undo_hijack(file_name)
-    @cleartool.invoke("update -rename #{file_name}")
+  def undo_hijack(file_names)
+    @cleartool.invoke("update -rename #{file_names.join(' ')}")
   end
 
   #
   #
-  def checkout_hijacked(file_name)
-    @cleartool.invoke("co -nq -nc #{file_name}")
+  def checkout_hijacked(file_names)
+    @cleartool.invoke("co -nq -nc #{file_names.join(' ')}")
+
+    # The checkout operation reverts the file to the VOB version and copies the
+    # hijacked version to .keep file
+    file_names.each do |file|
+      keep_file = file + '.keep'
+      raise "Cannot find file #{file}" unless File.exists?(file)
+      raise "Cannot find file #{keep_file}" unless File.exists?(keep_file)
+      File.delete(file)
+      File.rename(keep_file, file)
+    end
   end
 
   # Launches the default diff tool comparing two versions of a file.

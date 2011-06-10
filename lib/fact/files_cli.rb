@@ -34,6 +34,10 @@ class Cli
           menu.choice(file[:file]) { file  }
         end
 
+        # Undo hijack for all the files in one command
+        file_names = files.collect {|f| f[:file]}
+        menu.choice("Keep the changes and checkout all the files") { cc.checkout_hijacked(file_names); exit(true) }
+
         # The last entry allows graceful exit
         menu.choice("Exit") { exit(true) }
       end
@@ -60,8 +64,8 @@ class Cli
           cc.diff_vob_version(file_name, original_version)
         end
 
-        menu.choice("Drop the changes and renounce the hijack") { cc.undo_hijack(file_name)       }
-        menu.choice("Keep the changes and checkout")            { cc.checkout_hijacked(file_name) }
+        menu.choice("Drop the changes and renounce the hijack") { cc.undo_hijack([file_name])       }
+        menu.choice("Keep the changes and checkout")            { cc.checkout_hijacked([file_name]) }
         menu.choice("Exit") { exit(true) }
       end
   end
