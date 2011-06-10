@@ -2,7 +2,7 @@ Purpose and features
 ====================
 
 FireAphisClearerTool (FACT) is a small project intended to make a life
-with ClearCase a little bit happier. The project tries to achieve the
+with ClearCase UCM a little bit happier. The project tries to achieve the
 goal in two ways:
 
 1. Create an intuitive front end for IBM Rational ClearCase SCM.
@@ -26,6 +26,7 @@ This tool allows to perform the most common tasks in minimal amount of
 clicks and supplies only the necessary information in the most readable
 format, I could think of. Hope you will enjoy it too.
 
+The tool is intended for the UCM version of ClearCase.
 
 CLI
 ---
@@ -37,13 +38,28 @@ key presses and without the need to remember numerous commands.
 Here's the current menus hierarchy of the CLI mode:
 
 ```
-    Undelivered activities
+  |
+  +-- Create and set an activity
+  |  
+  +-- Browse undelivered activities
+  |     |
+  |     +-- Activity change set
+  |           |
+  |           +-- File information
+  |                 |
+  |                 +-- Change set predecessor diff
+  |
+  +-- Browse hijacked files
         |
-        --- Activity change set
-                |
-                --- File information
-                        |
-                        --- Change set predecessor diff
+        +-- List of hijacked files
+        |     |
+        |     +-- VOB version diff
+        |     |
+        |     +-- Undo hijack of a single file
+        |     |
+        |     +-- Check out and keep the changes of a single hijacked file
+        |
+        +-- Check out and keep the changes of all the hijacked files
 ```
 
 Dependencies
