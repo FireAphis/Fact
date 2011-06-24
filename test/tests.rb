@@ -145,6 +145,77 @@ class ClearCaseWrapperTests < Test::Unit::TestCase
                 {:file=>"./test/a18.h.obsolete", :version=>"/main/fact_1.0_Integ/3"                },
                 {:file=>"./test/a20.cpp",        :version=>"/main/fact_1.0_Integ/3"                }] 
     assert_equal(expected, hijacked)
-    
   end
+
+end
+
+
+class FileBackupTests < Test::Unit::TestCase
+
+  def setup
+    @dir  = "test_backup_file" 
+    @file = "#{@dir}/test.cpp.keep"
+    Dir.mkdir(@dir)
+  end
+
+  def teardown
+    system("rm -r #{@dir}")
+  end
+
+  def test_no_file
+    # Create existing backup files
+    (1 .. Fact::ClearCase::MAX_BACKUP_VERSIONS).each do |ver| 
+      File.open("#{@file}.#{ver}", "w") { |f| f.write("booga") }
+    end
+    # Ensure that the correct number of files was created
+    assert_equal(Fact::ClearCase::MAX_BACKUP_VERSIONS+2, Dir.entries(@dir).size)
+
+    cc = Fact::ClearCase.new
+    # The method should raise because the backed up file doesn't exist
+    assert_raise(RuntimeError) { cc.backup_file(@file) }
+    # Ensure that no new files were added
+    assert_equal(Fact::ClearCase::MAX_BACKUP_VERSIONS+2, Dir.entries(@dir).size)
+  end
+
+  def test_99_files
+    # Create the file that will be backed up
+    File.open(@file, "w") {|f| f.write("booga")}
+
+    # Create existing backup files
+    (1 .. Fact::ClearCase::MAX_BACKUP_VERSIONS-1).each do |ver| 
+      File.open("#{@file}.#{ver}", "w") { |f| f.write("booga") }
+    end
+    # Ensure that the correct number of files was created
+    assert_equal(Fact::ClearCase::MAX_BACKUP_VERSIONS+2, Dir.entries(@dir).size)
+    # Ensure that the back-up file that will be created doesn't exist yet
+    assert(!File.exists?("#{@file}.#{Fact::ClearCase::MAX_BACKUP_VERSIONS}"))
+
+    cc = Fact::ClearCase.new
+    assert_nothing_raised { cc.backup_file(@file) }
+    # Ensure that the backup was created
+    assert(File.exists?("#{@file}.#{Fact::ClearCase::MAX_BACKUP_VERSIONS}"))
+    # The orginal file should not exist now
+    assert(!File.exists?(@file))
+  end
+
+  def test_100_files
+    # Create the file that will be backed up
+    File.open(@file, "w") {|f| f.write("booga")}
+
+    # Create existing backup files
+    (1 .. Fact::ClearCase::MAX_BACKUP_VERSIONS).each do |ver| 
+      File.open("#{@file}.#{ver}", "w") { |f| f.write("booga") }
+    end
+    # Ensure that the correct number of files was created
+    assert_equal(Fact::ClearCase::MAX_BACKUP_VERSIONS+3, Dir.entries(@dir).size)
+
+    cc = Fact::ClearCase.new
+    # The method should raise because there are too many back up files 
+    assert_raise(RuntimeError) { cc.backup_file(@file) }
+    # Ensure that no new files were added
+    assert_equal(Fact::ClearCase::MAX_BACKUP_VERSIONS+3, Dir.entries(@dir).size)
+    # The orginal file should still exist
+    assert(File.exists?(@file))
+  end
+
 end
