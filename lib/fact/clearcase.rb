@@ -136,7 +136,7 @@ class ClearCase
 
     # Rename the .keep files for all the files that will be checked out.
     # Our checkout operation will create new keep files
-    file_names.each { |file| backup_file(file + '.keep') if File.exists?(file) }
+    file_names.each { |file| backup_file(file + '.keep') if File.exists?(file + '.keep') }
 
     @cleartool.invoke("co -nq -nc #{file_names.join(' ')}")
 
