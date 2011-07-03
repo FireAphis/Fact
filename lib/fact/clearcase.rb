@@ -122,22 +122,32 @@ class ClearCase
   end
 
   # Undo the hijack. Return to the VOB version; save the changes in .keep file.
+  # Receives a list of hijacked files as a parameter. If any of the files is not 
+  # hijacked, the behavior is undefined.
   #
   def undo_hijack(file_names)
     @cleartool.invoke("update -rename #{file_names.join(' ')}")
   end
 
-  #
+  # Chekout the hijacked files, but keep the changes. Receives a list of hijacked files
+  # as a parameter. If any of the files is not hijacked, the behavior is undefined.
   #
   def checkout_hijacked(file_names)
+
+    # Rename the .keep files for all the files that will be checked out.
+    # Our checkout operation will create new keep files
+    file_names.each { |file| backup_file(file + '.keep') if File.exists?(file) }
+
     @cleartool.invoke("co -nq -nc #{file_names.join(' ')}")
 
     # The checkout operation reverts the file to the VOB version and copies the
     # hijacked version to .keep file
     file_names.each do |file|
       keep_file = file + '.keep'
+
       raise "Cannot find file #{file}" unless File.exists?(file)
       raise "Cannot find file #{keep_file}" unless File.exists?(keep_file)
+
       File.delete(file)
       File.rename(keep_file, file)
     end
@@ -212,6 +222,25 @@ class ClearCase
     end
 
     return activities
+  end
+
+  MAX_BACKUP_VERSIONS = 100
+
+  def backup_file(file_name)
+    if File.exists?(file_name)
+      puts "Exists #{file_name}" 
+
+      # Find a new name for the file by addining a numerical suffix
+      for i in 1..MAX_BACKUP_VERSIONS+1
+        break if !File.exists?(file_name + ".#{i}")
+      end
+      if i==MAX_BACKUP_VERSIONS+1 then raise "Apparently you have at least one hundred backups for #{file_name}. Erase some and try again." end
+
+      puts "Renaming to #{i}"
+      File.rename(file_name, file_name + ".#{i}")
+    else
+      raise "Cannot find the backed up file #{file_name}"
+    end
   end
 
   def checkout_version?(version)

@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 # FireAphisClearerTool (FACT) is a small project intended to make a life
-# with ClearCase a little bit happier. The project tries to achieve the
+# with ClearCase UCM a little bit happier. The project tries to achieve the
 # goal in two ways:
 #
 # 1. Create an intuitive front end for IBM Rational ClearCase SCM.

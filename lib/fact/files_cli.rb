@@ -10,7 +10,8 @@ module Fact
 
 class Cli
 
-  #
+  # Shows a list of all the hijacked files and allows to perform various actions
+  # on the files.
   #
   def Cli.browse_hijacked
     cc = Fact::ClearCase.new
@@ -47,7 +48,7 @@ class Cli
     end
   end
 
-  #
+  # Presents a list of operations that can be performed on a single hijacked file.
   #
   def Cli.operate_hijacked_file(file_name, original_version)
     cc = Fact::ClearCase.new
