@@ -113,7 +113,7 @@ class ClearCase
 
     ls_out.each_line do |ls_line|
       # Find all the hijacks
-      if ls_line =~ /(.*) \[hijacked\]/
+      if ls_line =~ /(.*) \[.*hijacked.*\]/
         files.push(parse_cc_version($1))
       end
     end
