@@ -228,15 +228,12 @@ class ClearCase
 
   def backup_file(file_name)
     if File.exists?(file_name)
-      puts "Exists #{file_name}" 
-
       # Find a new name for the file by addining a numerical suffix
       for i in 1..MAX_BACKUP_VERSIONS+1
         break if !File.exists?(file_name + ".#{i}")
       end
       if i==MAX_BACKUP_VERSIONS+1 then raise "Apparently you have at least one hundred backups for #{file_name}. Erase some and try again." end
 
-      puts "Renaming to #{i}"
       File.rename(file_name, file_name + ".#{i}")
     else
       raise "Cannot find the backed up file #{file_name}"
