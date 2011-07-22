@@ -226,6 +226,10 @@ class ClearCase
 
   MAX_BACKUP_VERSIONS = 100
 
+  # Renames the specified file to <file_name>.N where N is the lowest natural number 0<N<=MAX_BACKUP_VERSION
+  # for which the file <file_name>.N doesn't yet exist. If there are already files for all the numbers or if
+  # the original file was not found, an exception will be thrown.
+  #
   def backup_file(file_name)
     if File.exists?(file_name)
       # Find a new name for the file by addining a numerical suffix
@@ -240,10 +244,15 @@ class ClearCase
     end
   end
 
+  # Returns true if the specified version string denotes a checked out version.
+  #
   def checkout_version?(version)
     return version =~ /CHECKEDOUT/
   end
 
+  # Defines how the object will access ClearTool.
+  # Used for dependency injection during unit testing.
+  #
   def cleartool=(new_ct)
     @cleartool = new_ct
   end
