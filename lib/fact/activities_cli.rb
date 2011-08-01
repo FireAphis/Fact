@@ -105,12 +105,20 @@ class Cli
         menu.prompt    = "Enter the file number: "
         menu.select_by = :index
 
+        checkedout_files = []
+
         #  Add a menu entry for each file in the changeset
         changeset.each do |file, versions|
+          is_checkout = cc.checkout_version?(versions.last)
+          checkedout_files.push(file) if is_checkout
+
           # Suffix contains the versions count and the check-out indicator
-          suffix = "version#{"s" unless versions.size<2}) #{"<%= color('CHECKED-OUT!', :red) %>" if cc.checkout_version?(versions.last)}"
+          suffix = "version#{"s" unless versions.size<2}) #{"<%= color('CHECKED-OUT!', :red) %>" if is_checkout}"
           menu.choice("#{file} (#{versions.size} #{suffix}") { {:file => file, :version => versions.last} }
         end
+
+        menu.choice("Check in all checked out files") { cc.checkin(checkedout_files); exit(true) }
+        menu.choice("Undo all checkouts") { cc.undo_checkout(checkedout_files); exit(true) }
 
         # The last entry allows graceful exit
         menu.choice("Exit") { exit(true) }

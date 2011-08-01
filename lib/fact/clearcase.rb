@@ -153,6 +153,18 @@ class ClearCase
     end
   end
 
+  # Checks in all the files in the list.
+  #
+  def checkin(file_names)
+    @cleartool.invoke("ci -nc #{file_names.join(' ')}")
+  end
+
+  # Backup each file in the list as .keep file and undo the checkouts.
+  #
+  def undo_checkout(file_names)
+    @cleartool.invoke("uncheckout -keep #{file_names.join(' ')}")
+  end
+
   # Launches the default diff tool comparing two versions of a file.
   # The first parameter is the name of an existing file. The second and the third 
   # parameters are strings indicating versions of the same file.
