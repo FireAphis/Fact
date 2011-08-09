@@ -38,6 +38,7 @@ class Cli
         # Undo hijack for all the files in one command
         file_names = files.collect {|f| f[:file]}
         menu.choice("Keep the changes and checkout all the files") { cc.checkout_hijacked(file_names); exit(true) }
+        menu.choice("Abandon all the changes") { cc.undo_hijack(file_names); exit(true) }
 
         # The last entry allows graceful exit
         menu.choice("Exit") { exit(true) }
