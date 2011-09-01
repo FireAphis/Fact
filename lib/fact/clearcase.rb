@@ -126,7 +126,8 @@ class ClearCase
   # hijacked, the behavior is undefined.
   #
   def undo_hijack(file_names)
-    @cleartool.invoke("update -rename #{file_names.join(' ')}")
+    quoted = file_names.collect {|s| '"'+s+'"'}
+    @cleartool.invoke("update -rename #{quoted.join(' ')}")
   end
 
   # Chekout the hijacked files, but keep the changes. Receives a list of hijacked files
@@ -156,13 +157,15 @@ class ClearCase
   # Checks in all the files in the list.
   #
   def checkin(file_names)
-    @cleartool.invoke("ci -nc #{file_names.join(' ')}")
+    quoted = file_names.collect {|s| '"'+s+'"'}
+    @cleartool.invoke("ci -nc #{quoted.join(' ')}")
   end
 
   # Backup each file in the list as .keep file and undo the checkouts.
   #
   def undo_checkout(file_names)
-    @cleartool.invoke("uncheckout -keep #{file_names.join(' ')}")
+    quoted = file_names.collect {|s| '"'+s+'"'}
+    @cleartool.invoke("uncheckout -keep #{quoted.join(' ')}")
   end
 
   # Launches the default diff tool comparing two versions of a file.
